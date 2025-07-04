@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from models.user import User
 from services.login_service import login_user
+from flask_cors import cross_origin
 
 login_blueprint = Blueprint('login', __name__)
 
 @login_blueprint.route('/api/login', methods=['POST'])
+@cross_origin()
 def login():
     form = request.form
     user = User(
