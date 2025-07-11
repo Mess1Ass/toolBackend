@@ -36,7 +36,8 @@ def download_file(file_id):
 
 @file_bp.route("/file/<file_id>", methods=["DELETE"])
 def delete_file(file_id):
-    success, msg = file_service.delete_by_id(file_id)
+    force = request.args.get("force", "false").lower() == "true"
+    success, msg = file_service.delete_by_id(file_id, force_delete_children=force)
     if not success:
         return jsonify({"error": msg}), 400
     return jsonify({"message": msg})
@@ -47,3 +48,34 @@ def view_excel(file_id):
     if err:
         return jsonify({"error": err}), 400
     return jsonify(result)
+
+
+@file_bp.route("/upload_folder", methods=["POST"])
+def upload_folder():
+    parent_param = request.args.get("parent")
+    try:
+        parent_id = str(parent_param) if parent_param else None
+    except:
+        return jsonify({"error": "无效的 parent 参数"}), 400
+
+    files = request.files.getlist("files")
+    try:
+        message, status = file_service.save_uploaded_files(files, parent_id)
+        return jsonify(message), status
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@file_bp.route("/folder/view_excels/<folder_id>", methods=["GET"])
+def folder_view_excels(folder_id):
+    try:
+        result, status = file_service.view_gift_excels(folder_id)
+        return jsonify(result), status
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@file_bp.route("/file_type/<item_id>", methods=["GET"])
+def file_type(item_id):
+    result, error = file_service.get_file_type(item_id)
+    if error:
+        return jsonify({"error": error}), 400
+    return jsonify(result), 200
