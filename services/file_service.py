@@ -128,7 +128,8 @@ def view_excel(file_id):
             "type": type_between,
             "columns": columns,
             "rows": data,
-            "datalist": datalist
+            "datalist": datalist,
+            "id": str(file_id)
         }, None
 
     except Exception as e:
