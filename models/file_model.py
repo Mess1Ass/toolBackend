@@ -1,10 +1,10 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from utils.db_util import get_collection
 import datetime
 
-client = MongoClient("mongodb://admin:admin@106.14.212.1:27017")
-db = client["SNH48"]
-collection = db["BidsExcels"]
+
+collection = get_collection("BidsExcels")
 
 # 插入文件、文件夹
 def insert_file_info(filename, size, path, is_folder=False, parent="root"):
