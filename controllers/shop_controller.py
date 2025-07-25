@@ -1,12 +1,10 @@
 from flask import Blueprint, request, jsonify, send_file
 from services import shop_service 
-from flask_cors import cross_origin
 from io import BytesIO
 
 shop_bp = Blueprint("shop", __name__)
 
 @shop_bp.route("/api/shop", methods=["POST"])
-@cross_origin()
 def fetch_shop_page():
     if request.method == 'OPTIONS':
         return '', 204  # 响应预检请求
@@ -28,7 +26,6 @@ def fetch_shop_page():
         return jsonify({"status": 400, "data": "", "error": f"参数错误：{str(e)}"})
     
 @shop_bp.route("/api/item", methods=["POST"])
-@cross_origin()
 def fetch_good_detail():
     if request.method == 'OPTIONS':
         return '', 204  # 响应预检请求
@@ -48,7 +45,6 @@ def fetch_good_detail():
         return jsonify({"status": 400, "data": "", "error": f"参数错误：{str(e)}"})
     
 @shop_bp.route("/api/exportGoodsExcel", methods=["POST"])
-@cross_origin()
 def fetch_goods_excel():
     if request.method == 'OPTIONS':
         return '', 204  # 响应预检请求
