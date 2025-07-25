@@ -11,7 +11,8 @@ from controllers.shop_controller import shop_bp
 from controllers.file_controller import file_bp
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "*"}})
+
 
 # 初始化 Swagger 文档
 swagger = Swagger(app)
