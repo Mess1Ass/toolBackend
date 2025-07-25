@@ -6,9 +6,11 @@ from models.file_model import (
     insert_file_info, list_files, delete_file,
     find_file_by_id, find_by_name_and_parent, find_files_by_parent
 )
+import config
+from flask import current_app
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "..", "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "..", "uploads")
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # 保存文件
 def save_file(file, parent="root"):
@@ -20,7 +22,9 @@ def save_file(file, parent="root"):
     if exists:
         return None, "当前路径下已有同名文件"
 
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
+    # 使用相对路径构建保存路径
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    filepath = os.path.join(upload_folder, filename)
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     file.save(filepath)
     size = os.path.getsize(filepath)
@@ -165,11 +169,15 @@ def save_uploaded_files(files, parent_id):
             existingFileNum += 1
             continue
 
-        save_path = os.path.join(UPLOAD_FOLDER, rel_path)
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        file.save(save_path)
+        # 使用相对路径构建保存路径
+        upload_folder = current_app.config["UPLOAD_FOLDER"]
+        filepath = os.path.join(upload_folder, filename)
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        file.save(filepath)
+        size = os.path.getsize(filepath)
+        print("保存文件:", filepath)
 
-        insert_file_info(filename, os.path.getsize(save_path), save_path, is_folder=False, parent=current_parent_id)
+        insert_file_info(filename, size, filepath, is_folder=False, parent=current_parent_id)
     if(existingFileNum >= len(files)):
         return {"message": "已存在相同文件"}, 400
     else:

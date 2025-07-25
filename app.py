@@ -2,7 +2,9 @@ from flask import Flask
 from flask_cors import CORS
 from flasgger import Swagger
 from pymongo import MongoClient
+from config import Config
 import config
+import os
 
 from controllers.login_controller import login_blueprint
 from controllers.shop_controller import shop_bp
@@ -18,9 +20,12 @@ swagger = Swagger(app)
 client = MongoClient(config.MONGO_URI)
 db = client[config.MONGO_DB]
 
-# 可选：把 db 存入 Flask 的全局上下文
+# 可选：把 db 存入 Flask 的全局上下文s
 app.config["MONGO_CLIENT"] = client
 app.config["MONGO_DB"] = db
+
+app.config.from_object(Config)
+app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, Config.UPLOAD_FOLDER_NAME)
 
 # 注册接口蓝图
 app.register_blueprint(login_blueprint)

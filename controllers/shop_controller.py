@@ -8,6 +8,8 @@ shop_bp = Blueprint("shop", __name__)
 @shop_bp.route("/api/shop", methods=["POST"])
 @cross_origin()
 def fetch_shop_page():
+    if request.method == 'OPTIONS':
+        return '', 204  # 响应预检请求
     try:
         data = request.json or {}
 
@@ -28,6 +30,8 @@ def fetch_shop_page():
 @shop_bp.route("/api/item", methods=["POST"])
 @cross_origin()
 def fetch_good_detail():
+    if request.method == 'OPTIONS':
+        return '', 204  # 响应预检请求
     try:
         data = request.json or {}
 
@@ -46,6 +50,8 @@ def fetch_good_detail():
 @shop_bp.route("/api/exportGoodsExcel", methods=["POST"])
 @cross_origin()
 def fetch_goods_excel():
+    if request.method == 'OPTIONS':
+        return '', 204  # 响应预检请求
     data = request.json or {}
 
     oneData = data.get("data")
