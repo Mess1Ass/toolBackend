@@ -5,7 +5,6 @@ from flask_cors import cross_origin
 login_blueprint = Blueprint('login', __name__)
 
 @login_blueprint.route('/api/login', methods=['POST'])
-@cross_origin()
 def login():
     form = request.form  # 如果是 multipart/form-data 请求
     user = {
